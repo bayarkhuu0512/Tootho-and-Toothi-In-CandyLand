@@ -364,26 +364,6 @@ public class ToothEatingAaruul extends Activity {
         persist.commit();
 	}
     
-    private final static int MENU_EXIT      = 1;
-    private final static int MENU_RESTART   = 2;
-    private final static int MENU_FRAMES    = 3;
-    private final static int MENU_SPEEDUP   = 4;
-    private final static int MENU_SPEEDDOWN = 5;
-    	
-    /**
-     * Called when your activity's options menu needs to be created.
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        menu.add(Menu.NONE, MENU_SPEEDDOWN, Menu.NONE, "Slower");
-        menu.add(Menu.NONE, MENU_SPEEDUP,   Menu.NONE, "Faster");
-        menu.add(Menu.NONE, MENU_FRAMES,    Menu.NONE, "Show Frames");
-        menu.add(Menu.NONE, MENU_RESTART,   Menu.NONE, "Restart");
-        menu.add(Menu.NONE, MENU_EXIT,      Menu.NONE, "Exit");
-        return true;
-    }
-
     @Override
     public boolean onMenuOpened(int featureId, Menu menu) {
         mGraphView.pauseGame();
@@ -419,40 +399,16 @@ public class ToothEatingAaruul extends Activity {
     	mGraphView.continueGame();
     }
     
-    /**
-     * Called when a menu item is selected.
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-    	if (item.getItemId() == MENU_EXIT) {
-    		mGraphView.mState = STATE_STOP;
-    		finish();
-    	}
-    	else if (item.getItemId() == MENU_RESTART) {
-    		mGraphView.init();
-    	}
-    	else if (item.getItemId() == MENU_FRAMES) {
-    		mShowFrames = !mShowFrames;
-    	}
-    	else if (item.getItemId() == MENU_SPEEDUP) {
-    		mGraphView.mSpeedFactor *= 1.5f;
-    	}
-    	else if (item.getItemId() == MENU_SPEEDDOWN) {
-    		mGraphView.mSpeedFactor /= 1.5f;
-    	}
-        return true;
-    }
-    
     private final static int MODE_PAUSE = 0;
     private final static int MODE_PLAY  = 1;
     private final static int MODE_EATEN = 2;
     private final static int MODE_GAMEOVER = 3;
-    
-    
 
 	private class GraphView extends View {
 		
 		private Fish   playerFish;
+		private Fish   playerFish2;
+		
 		private List<Fish> computerFishs;
 		private List<Goodie> goodies;
 		private int mMode;
@@ -506,6 +462,8 @@ public class ToothEatingAaruul extends Activity {
 			maxWidth = 0;
 			maxHeight = 0;
 			playerFish = new Fish(0, 0, DIR_RIGHT, SIZE_3, mAnimCount);
+			playerFish2 = new Fish(10, 10, DIR_RIGHT, SIZE_3, mAnimCount);
+			
 			clearWaypoints();
 			computerFishs = new ArrayList<Fish>();
 			goodies = new ArrayList<Goodie>();
@@ -889,15 +847,16 @@ public class ToothEatingAaruul extends Activity {
 			Paint paint = new Paint();
             paint.setStrokeWidth(0);
             paint.setColor(Color.BLACK);
-			drawBackground(canvas, paint);
-			drawTargetMarker(canvas, paint);
-			drawFood(canvas, paint);
-			drawComputerFishs(canvas, paint, SIZE_1, playerFish.size);
+//			drawBackground(canvas, paint);
+//			drawTargetMarker(canvas, paint);
+//			drawFood(canvas, paint);
+//			drawComputerFishs(canvas, paint, SIZE_1, playerFish.size);
 			drawPlayerFish(canvas, paint);
-			drawComputerFishs(canvas, paint, playerFish.size+1, SIZE_5);
-			drawGoodies(canvas, paint);
-			drawFrames(canvas, paint);
-			drawWaypoints(canvas, paint, mTouchedWaypoints);
+			drawPlayerFish2(canvas, paint);
+//			drawComputerFishs(canvas, paint, playerFish.size+1, SIZE_5);
+//			drawGoodies(canvas, paint);
+//			drawFrames(canvas, paint);
+//			drawWaypoints(canvas, paint, mTouchedWaypoints);
         }
 
 
@@ -959,6 +918,13 @@ public class ToothEatingAaruul extends Activity {
 					playerFish.posX =100*maxWidth/2;
 					playerFish.posY =100*maxWidth/2;
 				}
+				if ((playerFish2.posX > 100*maxWidth) 
+						|| (playerFish2.posY > 100*maxHeight)
+						|| (playerFish2.posX + playerFish2.posY == 20)) {
+						playerFish2.posX =(100*maxWidth/2)+50;
+						playerFish2.posY =(100*maxWidth/2)+50;
+					}
+				
 			}
 		}
 
@@ -973,10 +939,12 @@ public class ToothEatingAaruul extends Activity {
 		private void drawPlayerFish(Canvas canvas, Paint paint) {
 			int animStep = (mAnimCount % 15)/5;
 			canvas.drawBitmap(playerFishBitmap(playerFish.size, playerFish.dir, animStep), displayPosX(playerFish), displayPosY(playerFish), paint);
+			
 			float xOff = 100f*mDensityFactor*(FISHWIDTH[playerFish.size]-15f)/2f;
 			if (playerFish.dir == DIR_LEFT) {
 				xOff = -xOff;
 			}
+			
 			if (mActiveGoodie == GOODIE_BIGMOUTH) {
 				if ((mActiveGoodieTime>20) || ((mActiveGoodieTime%2)==0)) {
 					drawMouth(canvas, paint, playerFish.posX+xOff, playerFish.posY, playerFish.dir, playerFish.animStart);
@@ -984,6 +952,21 @@ public class ToothEatingAaruul extends Activity {
 			}
 		}
 		
+		private void drawPlayerFish2(Canvas canvas, Paint paint) {
+			int animStep = (mAnimCount % 15)/5;
+			canvas.drawBitmap(playerFish2Bitmap(playerFish2.size, playerFish2.dir, animStep), displayPosX(playerFish2), displayPosY(playerFish2), paint);
+			
+			float xOff = 100f*mDensityFactor*(FISHWIDTH[playerFish2.size]-15f)/2f;
+			if (playerFish2.dir == DIR_LEFT) {
+				xOff = -xOff;
+			}
+			
+			if (mActiveGoodie == GOODIE_BIGMOUTH) {
+				if ((mActiveGoodieTime>20) || ((mActiveGoodieTime%2)==0)) {
+					drawMouth(canvas, paint, playerFish2.posX+xOff, playerFish2.posY, playerFish2.dir, playerFish2.animStart);
+				}
+			}
+		}
 		
 		private void drawMouth(Canvas canvas, Paint paint, float posX, float posY, int dir, int animStart) {
 			int animStep = ((mAnimCount-animStart) % 12)/2;
@@ -1016,6 +999,14 @@ public class ToothEatingAaruul extends Activity {
 			}
 			return mPlayerFish[size*2+dir];
 		}
+		
+		private Bitmap playerFish2Bitmap(int size, int dir, int animStep) {
+			if ((mMode == MODE_EATEN)||(mMode == MODE_GAMEOVER)) {
+				return mFishbone[size*2+dir];
+			}
+			return mPlayerFish[size*2+dir];
+		}
+
 
 		private void drawComputerFishs(Canvas canvas, Paint paint, int minSize, int maxSize) {
 			for (Fish computerFish:computerFishs) {

@@ -1,18 +1,15 @@
 
 package com.bayarkhuu.tticl;
 
-import com.bayarkhuu.tticl.utils.Prefs;
-
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
+
+import com.bayarkhuu.tticl.utils.Prefs;
 
 
 public class TTICLMainActivity extends Activity {
@@ -38,7 +35,7 @@ public class TTICLMainActivity extends Activity {
 
 		// create view from xml
         setContentView(R.layout.main);
-
+        
         // checkboxes
         cbPlayMusic = (CheckBox) findViewById(R.id.cbPlayMusic);
         cbPlaySound = (CheckBox) findViewById(R.id.cbPlaySound);
@@ -59,6 +56,9 @@ public class TTICLMainActivity extends Activity {
         btHighscore.setOnClickListener(HighscoreListener);
         btHelp.setOnClickListener(HelpListener);
         btExit.setOnClickListener(ExitListener);
+        
+        Intent intent = new Intent(TTICLMainActivity.this, ToothEatingAaruul.class);
+    	startActivity(intent);
     }
 
 
