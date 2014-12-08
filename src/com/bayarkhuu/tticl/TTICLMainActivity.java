@@ -19,9 +19,6 @@ public class TTICLMainActivity extends Activity {
 
 	public final static boolean DEFAULT_PLAY_MUSIC_VALUE = true;
 
-	protected static final int HISC_LEVELSET_SELECTION = 2;
-	
-	
 	CheckBox cbPlayMusic;
 	CheckBox cbPlaySound;
 	Button   btStart;
@@ -93,25 +90,17 @@ public class TTICLMainActivity extends Activity {
     
 
     
-//    OnClickListener StartListener = new OnClickListener() {
-//        public void onClick(View v) {
-//	    	Intent intent = new Intent(AndroMazeActivity.this, AndroMazeLevelActivity.class);
-//        	startActivity(intent);
-//        }
-//    };
     OnClickListener StartListener = new OnClickListener() {
         public void onClick(View v) {
 	    	Intent intent = new Intent(TTICLMainActivity.this, ToothEatingAaruul.class);
 	    	startActivity(intent);
-
         }
     };
 	
     OnClickListener HighscoreListener = new OnClickListener() {
         public void onClick(View v) {
-            showDialog(HISC_LEVELSET_SELECTION);
-	    	//Intent intent = new Intent(AndroFishMainActivity.this, AndroFishHighscoreActivity.class);
-        	//startActivity(intent);
+	    	Intent intent = new Intent(TTICLMainActivity.this, HighscoreActivity.class);
+        	startActivity(intent);
         }
     };
 	
